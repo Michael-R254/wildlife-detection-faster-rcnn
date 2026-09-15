@@ -82,11 +82,11 @@ The raw dataset, annotations, TFRecords and trained checkpoints are **not includ
 
 | Notebook | Stage | What it does |
 |---|---|---|
-| [`01 Data Analysis.ipynb`](CW2%20Notebooks/01%20Data%20Analysis.ipynb) | EDA and validation | Plots the image-resolution scatter and histograms and prints summary statistics. Counts images vs. XMLs and copies the annotated pairs into `annotated_images/`. |
-| [`02 Model Training.ipynb`](CW2%20Notebooks/02%20Model%20Training.ipynb) | Training | Strips whitespace from XML `filename`/`name` fields and runs `xmlconversion.py`. Makes the 90/10 split, generates `train.record`/`test.record` from `label_map.pbtxt`, trains Faster R-CNN ResNet-101 for 6,000 steps with `model_main_tf2.py` and exports a SavedModel with `exporter_main_v2.py`. |
-| [`03 Evaluation Scripts.ipynb`](CW2%20Notebooks/03%20Evaluation%20Scripts.ipynb) | Evaluation | Runs `model_main_tf2.py` in eval-only mode (`--checkpoint_dir`, `--eval_timeout=600`) and checks that eval event files were written (8 found). |
-| [`04 Tensorboard.ipynb`](CW2%20Notebooks/04%20Tensorboard.ipynb) | Convergence analysis | Launches TensorBoard and discusses the total, classification and localisation loss, the learning-rate schedule and mAP at IoU 0.50 and 0.75. |
-| [`05 Inference.ipynb`](CW2%20Notebooks/05%20Inference.ipynb) | Inference | Loads the SavedModel and warms it up. Runs detection on `test_images/`, draws boxes with a score threshold of 0.75 and prints per-image timings. |
+| [`01 Data Analysis.ipynb`](notebooks/01%20Data%20Analysis.ipynb) | EDA and validation | Plots the image-resolution scatter and histograms and prints summary statistics. Counts images vs. XMLs and copies the annotated pairs into `annotated_images/`. |
+| [`02 Model Training.ipynb`](notebooks/02%20Model%20Training.ipynb) | Training | Strips whitespace from XML `filename`/`name` fields and runs `xmlconversion.py`. Makes the 90/10 split, generates `train.record`/`test.record` from `label_map.pbtxt`, trains Faster R-CNN ResNet-101 for 6,000 steps with `model_main_tf2.py` and exports a SavedModel with `exporter_main_v2.py`. |
+| [`03 Evaluation Scripts.ipynb`](notebooks/03%20Evaluation%20Scripts.ipynb) | Evaluation | Runs `model_main_tf2.py` in eval-only mode (`--checkpoint_dir`, `--eval_timeout=600`) and checks that eval event files were written (8 found). |
+| [`04 Tensorboard.ipynb`](notebooks/04%20Tensorboard.ipynb) | Convergence analysis | Launches TensorBoard and discusses the total, classification and localisation loss, the learning-rate schedule and mAP at IoU 0.50 and 0.75. |
+| [`05 Inference.ipynb`](notebooks/05%20Inference.ipynb) | Inference | Loads the SavedModel and warms it up. Runs detection on `test_images/`, draws boxes with a score threshold of 0.75 and prints per-image timings. |
 
 ---
 
@@ -99,7 +99,7 @@ wildlife-detection-faster-rcnn/
 ├── assets/
 │   ├── detection_oryx_multi_instance.png   # extracted from notebook 05
 │   └── total_loss_tensorboard.png          # extracted from notebook 04
-└── CW2 Notebooks/
+└── notebooks/
     ├── 01 Data Analysis.ipynb
     ├── 02 Model Training.ipynb
     ├── 03 Evaluation Scripts.ipynb
@@ -108,10 +108,10 @@ wildlife-detection-faster-rcnn/
     └── test_images/                         # 9 unseen JPGs, 3 per species
 ```
 
-The notebooks use relative paths and expect this **local, untracked** layout inside `CW2 Notebooks/`:
+The notebooks use relative paths and expect this **local, untracked** layout inside `notebooks/`:
 
 ```
-CW2 Notebooks/
+notebooks/
 ├── images/                     # raw images + Pascal VOC XMLs
 ├── annotated_images/{train,test}/
 ├── data/
@@ -153,14 +153,14 @@ CW2 Notebooks/
    ```bash
    pip install jupyter matplotlib numpy pillow tensorboard
    ```
-4. Copy `model_main_tf2.py` and `exporter_main_v2.py` from `models/research/object_detection/` into `CW2 Notebooks/`. `partition_dataset.py` and `generate_tfrecord.py` are available from the [TensorFlow 2 Object Detection API tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io/). `xmlconversion.py` is not included in this repository.
-5. Download the pretrained checkpoint `faster_rcnn_resnet101_v1_1024x1024_coco17_tpu-8` from the [TF2 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) and extract it to `CW2 Notebooks/training/TF2/training/`.
+4. Copy `model_main_tf2.py` and `exporter_main_v2.py` from `models/research/object_detection/` into `notebooks/`. `partition_dataset.py` and `generate_tfrecord.py` are available from the [TensorFlow 2 Object Detection API tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io/). `xmlconversion.py` is not included in this repository.
+5. Download the pretrained checkpoint `faster_rcnn_resnet101_v1_1024x1024_coco17_tpu-8` from the [TF2 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) and extract it to `notebooks/training/TF2/training/`.
 
 ## How to run
 
-Start Jupyter from inside `CW2 Notebooks/`, because every path in the notebooks is relative to that folder.
+Start Jupyter from inside `notebooks/`, because every path in the notebooks is relative to that folder.
 
-1. **Prepare the data.** Put the images and their XML files in `CW2 Notebooks/images/`, then run `01 Data Analysis.ipynb`.
+1. **Prepare the data.** Put the images and their XML files in `notebooks/images/`, then run `01 Data Analysis.ipynb`.
 2. **Create a label map** at `data/label_map.pbtxt` with three items (ids 1–3). The `name` values must exactly match the `<name>` tags in your XML files.
 3. **Edit `pipeline.config`.** The settings that usually need changing are `num_classes: 3`, `fine_tune_checkpoint` (pointing to the downloaded `ckpt-0`), `fine_tune_checkpoint_type: "detection"`, `label_map_path`, and the `input_path` of the train and eval readers (`data/train.record`, `data/test.record`).
 4. Run `02 Model Training.ipynb` to split the data, build the TFRecords, train for 6,000 steps and export the model.
