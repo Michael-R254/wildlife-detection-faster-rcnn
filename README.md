@@ -59,7 +59,7 @@ Times are the printed values. The assessments are the author's visual judgements
 | Classes | 3 (500 annotated images each, counted from the filenames printed in notebook 02) |
 | Train / test split | 90 / 10 (`partition_dataset.py -r 0.1`) |
 
-**Image resolution over all raw images.** Notebook 01 labels `img.shape[0]` as width, but it is actually height. The table gives the corrected axes:
+**Image resolution over all raw images:**
 
 | | Mean | Min | Max |
 |---|---:|---:|---:|
@@ -172,7 +172,7 @@ Start Jupyter from inside `notebooks/`, because every path in the notebooks is r
 ## Known issues and limitations
 
 - **Not reproducible from this repository alone.** The dataset, `label_map.pbtxt`, `pipeline.config`, the helper scripts and the trained model are not included. The exact training hyperparameters (batch size, learning-rate schedule, augmentation) are therefore not documented.
-- **Width and height are swapped in notebook 01.** `d1, d2, color = img.shape` stores height in `dim1`, but the plots and print statements label it as width.
+- **Notebook 01's saved resolution plots have swapped labels.** The width/height mix-up in the image-loading code has been fixed, but the three saved figures were drawn before the fix and could not be redrawn without the dataset. Each carries a note, and re-running the notebook regenerates them.
 - **The saved cells show interrupted runs.** The training, export, evaluation and `tensorboard` cells all show `^C` as their output. The exported model and the 8 eval event files exist, so these steps did complete at some point, but their logs are not saved in the notebooks.
 - **The evaluation is thin.** It uses a single random 90/10 split with no separate validation set. mAP is logged only at step 6,000, there is no per-class AP, and the values were read from screenshots.
 - **The data sources may bias the model.** All training oryx come from one Snapshot Safari site, and lions and warthogs come from different collections. The model may be learning camera or background cues as well as the animals themselves.
