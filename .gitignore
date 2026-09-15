@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------
+# Raw datasets and derived data (not redistributed; see README)
+# ---------------------------------------------------------------
+images/
+annotated_images/
+*.zip
+*.tar
+*.tar.gz
+
+# TFRecords (regenerable with generate_tfrecord.py, hundreds of MB)
+*.record
+*.tfrecord
+
+# ---------------------------------------------------------------
+# Training artefacts (checkpoints and SavedModels can exceed 100 MB)
+# Ignore everything under training/ except pipeline.config files
+# ---------------------------------------------------------------
+**/training/**
+!**/training/**/
+!**/training/**/pipeline.config
+
+ckpt-*
+checkpoint
+saved_model/
+*.pb
+*.h5
+events.out.tfevents*
+
+# Local clone of tensorflow/models (install dependency)
+models/
+
+# ---------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+.env
+
+# ---------------------------------------------------------------
+# Jupyter
+# ---------------------------------------------------------------
+.ipynb_checkpoints/
+.virtual_documents/
+
+# ---------------------------------------------------------------
+# OS
+# ---------------------------------------------------------------
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# ---------------------------------------------------------------
+# Editors
+# ---------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*~
