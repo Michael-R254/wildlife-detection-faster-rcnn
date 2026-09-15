@@ -1,6 +1,6 @@
 # Wildlife Detection with Faster R-CNN
 
-A three-class camera-trap wildlife detector for **oryx (*Oryx gazella*)**, **lion (*Panthera leo*)** and **warthog (*Phacochoerus africanus*)**. It fine-tunes a COCO-pretrained **Faster R-CNN ResNet-101 (1024×1024)** with the **TensorFlow 2 Object Detection API** on 1,500 annotated images (500 per class), selected from a pool of 6,336 raw images. After 6,000 training steps the model reaches **mAP@0.50 = 0.8926** and **mAP@0.75 = 0.7016** on the evaluation split. After warm-up, inference takes **about 0.06 s per image** (0.053–0.074 s across 18 timed runs). The work is split into five Jupyter notebooks: data analysis, training, evaluation, TensorBoard analysis and qualitative inference on 9 unseen test images.
+A three-class camera-trap wildlife detector for **oryx (*Oryx gazella*)**, **lion (*Panthera leo*)** and **warthog (*Phacochoerus africanus*)**. It fine-tunes a COCO-pretrained **Faster R-CNN ResNet-101 (1024×1024)** with the **TensorFlow 2 Object Detection API** on 1,500 annotated images (500 per class), selected from a pool of 6,336 raw images. After 6,000 training steps the model reaches **mAP@0.50 = 0.8926** and **mAP@0.75 = 0.7016** on the evaluation split. After warm-up, inference takes **about 0.06 s per image** (0.061–0.067 s across the 9 test images). The work is split into five Jupyter notebooks: data analysis, training, evaluation, TensorBoard analysis and qualitative inference on 9 unseen test images.
 
 <p align="center">
   <img src="assets/detection_oryx_multi_instance.png" alt="Faster R-CNN detections on an unseen Snapshot Kgalagadi oryx image" width="48%">
@@ -23,27 +23,27 @@ A three-class camera-trap wildlife detector for **oryx (*Oryx gazella*)**, **lio
 
 ### Inference speed (printed output, `05 Inference.ipynb`)
 
-| | Run 1 | Run 2 |
-|---|---:|---:|
-| SavedModel load time | 65.93 s | 10.83 s |
-| Per-image inference, range | 0.061–0.067 s | 0.053–0.074 s |
-| Per-image inference, mean of 9 | 0.064 s | 0.063 s |
+| | Value |
+|---|---:|
+| SavedModel load time (cold start) | 65.93 s |
+| Per-image inference, range | 0.061–0.067 s |
+| Per-image inference, mean of 9 | 0.064 s |
 
-The first load is a cold start. The notebook then runs the same code a second time, and that run gives the second column. Both runs start with a warm-up pass on a 1024×1024 zero tensor before any image is timed.
+A warm-up pass on a 1024×1024 zero tensor runs before any image is timed.
 
 ### Qualitative test images (score threshold 0.75)
 
-| Test image | True species | Time run 1 (s) | Time run 2 (s) | Author's visual assessment |
-|---|---|---:|---:|---|
-| `OryxGazella_KAR_S1_E02_R1_IMAG2530` | Oryx | 0.061 | 0.059 | Success: small oryx in a wide landscape |
-| `OryxGazella_KAR_S1_E03_R1_IMAG0048` | Oryx | 0.067 | 0.053 | Fail: close-up, truncated animal not detected |
-| `OryxGazella_KGA_S1_A06_R1_IMAG0177` | Oryx | 0.067 | 0.061 | Success: two oryx detected |
-| `PantheraLeo4835` | Lion | 0.066 | 0.074 | Success |
-| `PantheraLeo4883` | Lion | 0.066 | 0.066 | Success: walking pose |
-| `PantheraLeo4895` | Lion | 0.065 | 0.059 | Success: side-on, in motion |
-| `PhacochoerusAfricanus_LMA1_19NR12__20201216__162415` | Warthog | 0.061 | 0.062 | Partial: background warthog missed |
-| `PhacochoerusAfricanus_LMA1_19NR12__20201218__174153` | Warthog | 0.063 | 0.067 | Failure: labelled as lion, plus a duplicate box |
-| `PhacochoerusAfricanus_LMA1_22NR36__20201221__090223_1` | Warthog | 0.062 | 0.065 | Success |
+| Test image | True species | Inference time (s) | Author's visual assessment |
+|---|---|---:|---|
+| `OryxGazella_KAR_S1_E02_R1_IMAG2530` | Oryx | 0.061 | Success: small oryx in a wide landscape |
+| `OryxGazella_KAR_S1_E03_R1_IMAG0048` | Oryx | 0.067 | Fail: close-up, truncated animal not detected |
+| `OryxGazella_KGA_S1_A06_R1_IMAG0177` | Oryx | 0.067 | Success: two oryx detected |
+| `PantheraLeo4835` | Lion | 0.066 | Success |
+| `PantheraLeo4883` | Lion | 0.066 | Success: walking pose |
+| `PantheraLeo4895` | Lion | 0.065 | Success: side-on, in motion |
+| `PhacochoerusAfricanus_LMA1_19NR12__20201216__162415` | Warthog | 0.061 | Partial: background warthog missed |
+| `PhacochoerusAfricanus_LMA1_19NR12__20201218__174153` | Warthog | 0.063 | Failure: labelled as lion, plus a duplicate box |
+| `PhacochoerusAfricanus_LMA1_22NR36__20201221__090223_1` | Warthog | 0.062 | Success |
 
 Times are the printed values. The assessments are the author's visual judgements of the rendered detections. Detection confidence scores were not printed, so they are omitted here.
 
@@ -178,7 +178,6 @@ Start Jupyter from inside `notebooks/`, because every path in the notebooks is r
 - **The data sources may bias the model.** All training oryx come from one Snapshot Safari site, and lions and warthogs come from different collections. The model may be learning camera or background cues as well as the animals themselves.
 - **Small qualitative test.** Only 9 images were tested. The failures seen were a truncated close-up, a small background animal and a warthog labelled as a lion.
 - **Only annotated images are used.** 4,836 of the 6,336 raw images have no annotation and are not used.
-- **`05 Inference.ipynb` runs twice and is large (29 MB).** Its cell repeats the entire load-and-infer block, so every output appears twice.
 - **`xmlconversion.py` calls `rsync`,** which is not available on Windows, so the notebook shows an error for that step.
 - Notebook 02 uses `!code` to open files, which needs the VS Code CLI.
 
